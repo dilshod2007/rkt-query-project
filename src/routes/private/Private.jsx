@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 
 const Private = () => {
     const {token} = useSelector(state => state.auth);
-    console.log(token)
+    // console.log(token)
 
     if(!token) return <Navigate to="/auth/login" />
     return <Outlet/>

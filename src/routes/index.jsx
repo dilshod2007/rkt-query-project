@@ -9,6 +9,8 @@ const Login = lazy(() => import('../routes/auth/login/Login'));
 const NotFound = lazy(() => import('../routes/not-found/NotFound'));
 const SignUp = lazy(() => import('../routes/auth/signUp/SignUp'));
 
+const Single = lazy(() => import ("../routes/single/Single"))
+
 const RouteController = () => {
     return useRoutes([
 
@@ -40,6 +42,11 @@ const RouteController = () => {
                     element: <Suspense><SignUp/></Suspense>
                 }
             ]
+        },
+        {
+            path:`/single/:id`,
+            element: <Suspense><Single/></Suspense>
+
         },
         {
             path: "*",

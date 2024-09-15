@@ -1,5 +1,6 @@
 import React from 'react'
 import { useGetProductsQuery } from '../../redux/api/ProductsApi'
+import {Link} from "react-router-dom"
 
 const Product = () => {
     const { data } = useGetProductsQuery();
@@ -11,14 +12,16 @@ const Product = () => {
   {data && data.payload &&
     data.payload.map(product => (
       <div key={product._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        <img src={product.product_images[0]} alt={product.product_name} className="w-full " />
+       <Link to={`/single/${product._id}`}>
+       <img src={product.product_images[0]} alt={product.product_name} className="w-full " />
+       </Link>
         
         <div className="p-4">
           <h3 className="text-xl font-semibold mb-2">{product.product_name}</h3>
           <p className="text-gray-600 text-sm mb-2">{product.description}</p>
 
           <div className="flex justify-between items-center text-gray-800">
-            <p className="text-lg font-bold">${product.price}</p>
+            <p className="text-lg font-bold">$900{product.price}</p>
             <p className="text-sm">In Stock: {product.countInStock}</p>
           </div>
 

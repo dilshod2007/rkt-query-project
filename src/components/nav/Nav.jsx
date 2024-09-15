@@ -32,6 +32,9 @@ const Nav = () => {
                         >
                             Auth
                         </Link>
+                        <Link className='text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-300' to='/single/66a5fe5aef9f646863b22f6f'>
+                            Single
+                        </Link>
                     </li>
                 </ul>
             </div>
