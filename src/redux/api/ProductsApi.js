@@ -4,9 +4,9 @@ const productsApi = api.injectEndpoints({
   endpoints: (build) => ({
     getProducts: build.query({
       query: () => ({
-        url: "/product/all"
+        url: "/product/all", 
       }),
-    })
+    }),
   }),
 });
 
