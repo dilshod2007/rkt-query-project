@@ -12,6 +12,8 @@ const SignUp = lazy(() => import('../routes/auth/signUp/SignUp'));
 const Single = lazy(() => import ("../routes/single/Single"))
 
 const RouteController = () => {
+
+    
     return useRoutes([
 
         {
