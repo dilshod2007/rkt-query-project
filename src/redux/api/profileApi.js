@@ -1,13 +1,13 @@
-import { api } from "./index";
+  import { api } from "./index";
 
-const profileApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    profile: build.query({
-      query: () => ({
-        url: "/auth/profile",
+  const profileApi = api.injectEndpoints({
+    endpoints: (build) => ({
+      profile: build.query({
+        query: () => ({
+          url: "/auth/profile",
+        }),
       }),
     }),
-  }),
-});
+  });
 
-export const { useProfileQuery } = profileApi;
+  export const { useProfileQuery } = profileApi;

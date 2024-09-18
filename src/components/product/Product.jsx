@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
-import { useGetProductsQuery } from '../../redux/api/ProductsApi'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { useGetProductsQuery } from '../../redux/api/ProductsApi';
+import { Link } from 'react-router-dom';
 import { Rate } from 'antd';
-import { FaHeart } from 'react-icons/fa';  
+import { FaHeart } from 'react-icons/fa';
 
 const Product = () => {
   const { data } = useGetProductsQuery();
-  
   const [likedProducts, setLikedProducts] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]); 
+  const [autocomplete, setAutocomplete] = useState([]); 
 
   const handleLike = (productId) => {
     setLikedProducts(prevState => ({
@@ -15,6 +17,24 @@ const Product = () => {
       [productId]: !prevState[productId]
     }));
   };
+
+  useEffect(() => {
+    if (data && data.payload) {
+      const filtered = data.payload.filter(product =>
+        product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+
+      if (searchTerm.length > 0) {
+        const auto = data.payload
+          .filter(product => product.product_name.toLowerCase().startsWith(searchTerm.toLowerCase()))
+          .map(product => product.product_name);
+        setAutocomplete(auto);
+      } else {
+        setAutocomplete([]);
+      }
+    }
+  }, [searchTerm, data]);
 
   return (
     <>
@@ -40,11 +60,31 @@ const Product = () => {
         </div>
       </div>
 
-      <div id="shop" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6 bg-gray-100 mt-10">
-        {data && data.payload &&
-          data.payload.map(product => (
+      <div className="p-6 bg-gray-100 mt-10">
+        <input 
+          type="text" 
+          placeholder="Search products..." 
+          value={searchTerm} 
+          onChange={(e) => setSearchTerm(e.target.value)} 
+          className="w-full py-3 px-6 mb-4 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+        />
+
+        {autocomplete.length > 0 && (
+          <ul className="bg-white border border-gray-300 rounded-md mt-2 max-h-48 overflow-y-auto">
+            {autocomplete.map((item, index) => (
+              <li key={index} className="py-2 px-4 hover:bg-gray-200 cursor-pointer"
+                onClick={() => setSearchTerm(item)}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div id="shop" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6 bg-gray-100">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map(product => (
             <div key={product._id} className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden relative">
-              
               <div className="absolute top-2 right-2">
                 <FaHeart 
                   size={24}
@@ -54,7 +94,7 @@ const Product = () => {
               </div>
 
               <Link to={`/single/${product._id}`}>
-                <img src={product.product_images[0]} alt={product.product_name} className="w-full object-cover flex-shrink-0 flex justify-center align-center" />
+                <img src={product.product_images[0]} alt={product.product_name} className="w-full object-cover" />
               </Link>
 
               <div className="p-6">
@@ -75,66 +115,12 @@ const Product = () => {
               </div>
             </div>
           ))
-        }
+        ) : (
+          <p className="text-center text-gray-700 col-span-full">No products found.</p>
+        )}
       </div>
-
-      <div className="bg-blue-50 py-16">
-        <h2 className="text-center text-4xl font-extrabold text-gray-800 mb-8">Recommended Products</h2>
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {data && data.payload.slice(0, 4).map(product => (
-            <div key={product._id} className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden">
-              <Link to={`/single/${product._id}`}>
-                <img src={product.product_images[0]} alt={product.product_name} className="w-full  object-cover" />
-              </Link>
-
-              <div className="p-4">
-                <h3 className="text-xl font-bold mb-2 text-gray-800">{product.product_name}</h3>
-                <p className="text-gray-600 text-base">${product.sale_price}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white py-16">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-extrabold mb-4">Subscribe to Our Newsletter</h2>
-          <p className="text-lg mb-8">Stay updated with the latest products and offers!</p>
-          <form className="flex flex-col md:flex-row justify-center gap-[30px]">
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="py-3 px-6 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-white w-full md:w-auto mb-4 md:mb-0" 
-            />
-            <button 
-              type="submit" 
-              className="bg-white text-blue-600 py-3 px-6 rounded-md shadow-md font-semibold hover:bg-gray-100 transition-transform transform hover:scale-105">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <div className="bg-gray-100 py-16">
-        <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div>
-            <h3 className="text-5xl font-bold text-blue-600">100K+</h3>
-            <p className="text-lg font-semibold text-gray-700 mt-2">Satisfied Customers</p>
-          </div>
-          <div>
-            <h3 className="text-5xl font-bold text-blue-600">500+</h3>
-            <p className="text-lg font-semibold text-gray-700 mt-2">Products Available</p>
-          </div>
-          <div>
-            <h3 className="text-5xl font-bold text-blue-600">24/7</h3>
-            <p className="text-lg font-semibold text-gray-700 mt-2">Customer Support</p>
-          </div>
-        </div>
-      </div>
-       
     </>
-  )
-}
-
+  );
+};
 
 export default Product;

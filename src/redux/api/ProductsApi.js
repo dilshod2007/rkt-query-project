@@ -1,13 +1,13 @@
-import { api } from "./index";
+  import { api } from "./index";
 
-const productsApi = api.injectEndpoints({
-  endpoints: (build) => ({
-    getProducts: build.query({
-      query: () => ({
-        url: "/product/all", 
+  const productsApi = api.injectEndpoints({
+    endpoints: (build) => ({
+      getProducts: build.query({
+        query: () => ({
+          url: "/product/all", 
+        }),
       }),
     }),
-  }),
-});
+  });
 
-export const { useGetProductsQuery } = productsApi;
+  export const { useGetProductsQuery } = productsApi;
